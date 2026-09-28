@@ -1,0 +1,212 @@
+HOJA,CAMPO,CODIGO,DESCRIPCION
+SINIESTROS,GRAVEDAD,1,Con Muertos
+SINIESTROS,GRAVEDAD,2,Con Heridos
+SINIESTROS,GRAVEDAD,3,Solo Daños
+SINIESTROS,CLASE,7,Autolesion
+SINIESTROS,CLASE,1,Choque
+SINIESTROS,CLASE,2,Atropello
+SINIESTROS,CLASE,4,Caida de ocupante
+SINIESTROS,CLASE,3,Volcamiento
+SINIESTROS,CLASE,6,Otro
+SINIESTROS,CLASE,5,Incendio
+SINIESTROS,CHOQUE,1,Vehiculo
+SINIESTROS,CHOQUE,2,Tren
+SINIESTROS,CHOQUE,3,Semoviente
+SINIESTROS,CHOQUE,4,Objeto Fijo
+SINIESTROS,OBJETO_FIJO,1,Muro
+SINIESTROS,OBJETO_FIJO,2,Poste
+SINIESTROS,OBJETO_FIJO,3,Arbol
+SINIESTROS,OBJETO_FIJO,4,Barandas
+SINIESTROS,OBJETO_FIJO,5,Semaforo
+SINIESTROS,OBJETO_FIJO,6,Inmueble
+SINIESTROS,OBJETO_FIJO,7,Hidrante
+SINIESTROS,OBJETO_FIJO,8,"Valla, Señal"
+SINIESTROS,OBJETO_FIJO,9,"Tarima, Caseta"
+SINIESTROS,OBJETO_FIJO,10,Vehiculo estacionado
+SINIESTROS,OBJETO_FIJO,11,Otro
+SINIESTROS,CODIGO_LOCALIDAD,1,Usaquén
+SINIESTROS,CODIGO_LOCALIDAD,2,Chapinero
+SINIESTROS,CODIGO_LOCALIDAD,3,Santa Fe
+SINIESTROS,CODIGO_LOCALIDAD,4,San Cristóbal
+SINIESTROS,CODIGO_LOCALIDAD,5,Usme
+SINIESTROS,CODIGO_LOCALIDAD,6,Tunjuelito
+SINIESTROS,CODIGO_LOCALIDAD,7,Bosa
+SINIESTROS,CODIGO_LOCALIDAD,8,Kennedy
+SINIESTROS,CODIGO_LOCALIDAD,9,Fontibón
+SINIESTROS,CODIGO_LOCALIDAD,10,Engativá
+SINIESTROS,CODIGO_LOCALIDAD,11,Suba
+SINIESTROS,CODIGO_LOCALIDAD,12,Barrios Unidos
+SINIESTROS,CODIGO_LOCALIDAD,13,Teusaquillo
+SINIESTROS,CODIGO_LOCALIDAD,14,Los Mártires
+SINIESTROS,CODIGO_LOCALIDAD,15,Antonio Nariño
+SINIESTROS,CODIGO_LOCALIDAD,16,Puente Aranda
+SINIESTROS,CODIGO_LOCALIDAD,17,La Candelaria
+SINIESTROS,CODIGO_LOCALIDAD,18,Rafael Uribe Uribe
+SINIESTROS,CODIGO_LOCALIDAD,19,Ciudad Bolívar
+SINIESTROS,CODIGO_LOCALIDAD,20,Sumapaz
+SINIESTROS,DISENO_LUGAR,1,Tramo de Via
+SINIESTROS,DISENO_LUGAR,2,Interseccion
+SINIESTROS,DISENO_LUGAR,3,Via peatonal
+SINIESTROS,DISENO_LUGAR,4,Paso elevado
+SINIESTROS,DISENO_LUGAR,5,Paso inferior
+SINIESTROS,DISENO_LUGAR,6,Paso a nivel
+SINIESTROS,DISENO_LUGAR,7,Glorieta
+SINIESTROS,DISENO_LUGAR,8,Puente
+SINIESTROS,DISENO_LUGAR,9,Via troncal
+SINIESTROS,DISENO_LUGAR,10,Lote o predio
+SINIESTROS,DISENO_LUGAR,11,Cicloruta
+SINIESTROS,DISENO_LUGAR,12,Ponton
+SINIESTROS,DISENO_LUGAR,13,Tunel
+VEHICULOS,CLASE,1,Automovil
+VEHICULOS,CLASE,2,Bus
+VEHICULOS,CLASE,3,Buseta
+VEHICULOS,CLASE,4,"Camion, Furgon"
+VEHICULOS,CLASE,5,Camioneta
+VEHICULOS,CLASE,6,Campero
+VEHICULOS,CLASE,7,Microbus
+VEHICULOS,CLASE,8,Tractocamion
+VEHICULOS,CLASE,9,Volqueta
+VEHICULOS,CLASE,10,Motocicleta
+VEHICULOS,CLASE,11,M. Agricola
+VEHICULOS,CLASE,12,M. Industrial
+VEHICULOS,CLASE,13,Bicicleta
+VEHICULOS,CLASE,14,Motocarro
+VEHICULOS,CLASE,15,Traccion animal
+VEHICULOS,CLASE,16,Otro
+VEHICULOS,CLASE,17,Motociclo
+VEHICULOS,CLASE,22,Ambulacia
+VEHICULOS,CLASE,18,No identificado
+VEHICULOS,CLASE,28,Bicitaxi
+VEHICULOS,CLASE,19,Bus Articulado
+VEHICULOS,CLASE,20,Bus Alimentador
+VEHICULOS,CLASE,21,Tren
+VEHICULOS,CLASE,23,Metro
+VEHICULOS,CLASE,25,Remolque
+VEHICULOS,CLASE,24,Cuatrimoto
+VEHICULOS,CLASE,26,Semi-Remolque
+VEHICULOS,CLASE,27,Bus Bi-Articulado
+VEHICULOS,SERVICIO,1,Oficial
+VEHICULOS,SERVICIO,2,Publico
+VEHICULOS,SERVICIO,3,Particular
+VEHICULOS,SERVICIO,4,Diplomatico
+VEHICULOS,SERVICIO,0,SIN INFORMACION
+VEHICULOS,MODALIDAD,3,Carga - Extradimensionada
+VEHICULOS,MODALIDAD,10,Pasajeros - Masivo
+VEHICULOS,MODALIDAD,1,Mixto
+VEHICULOS,MODALIDAD,2,Carga - Extrapesada
+VEHICULOS,MODALIDAD,4,Pasajeros - Colectivo
+VEHICULOS,MODALIDAD,5,Pasajeros - Individual
+VEHICULOS,MODALIDAD,6,Pasajeros - Especial escolar
+VEHICULOS,MODALIDAD,7,Pasajeros - Especial turismo
+VEHICULOS,MODALIDAD,8,Pasajeros - Especial asalariado
+VEHICULOS,MODALIDAD,9,Pasajeros - Especial Ocasional
+VEHICULOS,MODALIDAD,12,Carga - Mercancia Peligrosa
+VEHICULOS,MODALIDAD,11,Carga-Pesada
+HIPOTESIS,CODIGO_CAUSA,90,Transportar otra persona o cosas (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,91,No conducir en horcajadas (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,92,No sujetar los manubrios (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,93,Transitar distante de la acera u orilla de la calzada (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,94,Circular por calzadas destinadas a buses y busetas (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,95,Transitar uno al lado del otro (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,96,Sujetarse a otro vehículo (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,97,Transitar por vías prohibidas (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,98,Transitar entre vehículos (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,99,No hacer uso de señales reflectivas (ciclista o motociclista)
+HIPOTESIS,CODIGO_CAUSA,101,Adelantar en curva (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,102,Adelantar por la derecha (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,103,Adelantar cerrando (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,104,Adelantar invadiendo vía (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,105,Adelantar en zona prohibida (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,106,Adelantar invadiendo carril del mismo sentido en zigzag (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,107,Aprovisionamiento indebido (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,108,Carga sobresaliente sin señales (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,109,Defectos físicos y psíquicos (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,110,Exceso en horas de conducción (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,111,Dejar obstáculos en la vía (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,112,Desobedecer señales (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,113,Desobedecer al agente (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,114,Embriaguez aparente (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,115,Embriaguez o droga (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,116,Exceso de velocidad (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,117,Explosivos o similares con pasajeros (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,118,Falta de mantenimiento mecánico (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,119,Frenar bruscamente (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,120,Pasajeros obstruyendo el conductor (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,121,No mantener distancia de seguridad (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,122,Girar bruscamente (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,123,No respetar prelación de intersecciones o giros (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,124,No cambiar luces (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,125,Estacionar sin seguridad (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,126,Animales en la vía (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,127,Transitar en contravía (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,128,Recoger o dejar pasajeros sobre la calzada (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,129,Transportar pasajeros en la parte exterior (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,130,Transitar sin luces (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,131,Salirse de la calzada (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,132,No respetar prelación (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,133,Subirse al andén o vías peatonales (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,134,Reverso imprudente (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,135,Remolque sin precaución (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,136,Incendio por reparación indebida (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,137,Falta de señales en vehículo varado (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,138,Incendio por reparación indebida (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,139,Impericia en el manejo (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,140,Transitar sin los dispositivos luminosos de detención (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,141,Vehículo mal estacionado (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,142,Semáforo en rojo (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,143,Poner en marcha un vehículo sin precauciones (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,144,Carga sobresaliente sin autorización (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,145,Arrancar sin precaución (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,146,"Realizar giro en ""u"" (conductor en general)"
+HIPOTESIS,CODIGO_CAUSA,147,Conducir vehículo sin adaptaciones (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,148,Exceso de peso (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,149,Reparar vehículo en vía publica (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,150,Impartir enseñanza automovilística sin autorización (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,151,Transporte de carga sin seguridad (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,152,Dejar o recoger pasajeros en sitios no demarcados (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,153,No portar espejos (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,154,Transitar con las puertas abiertas (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,155,Cargue o descargue en horas o sitios prohibidos (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,156,Transportar  pasajeros en vehículos de carga (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,157,Otra (conductor en general)
+HIPOTESIS,CODIGO_CAUSA,201,Fallas en las llantas (vehículo)
+HIPOTESIS,CODIGO_CAUSA,202,Fallas en los frenos (vehículo)
+HIPOTESIS,CODIGO_CAUSA,203,Fallas en dirección (vehículo)
+HIPOTESIS,CODIGO_CAUSA,204,Fallas en luces direccionales (vehículo)
+HIPOTESIS,CODIGO_CAUSA,205,Fallas en luces de frenos (vehículo)
+HIPOTESIS,CODIGO_CAUSA,206,Fallas en luces delanteras (vehículo)
+HIPOTESIS,CODIGO_CAUSA,207,Falla en luces posteriores (vehículo)
+HIPOTESIS,CODIGO_CAUSA,208,Falla en pito (vehículo)
+HIPOTESIS,CODIGO_CAUSA,209,Falla en el exosto y gases en el interior  del veh (vehículo)
+HIPOTESIS,CODIGO_CAUSA,210,Fallas en el limpia brisas (vehículo)
+HIPOTESIS,CODIGO_CAUSA,211,Falla en el sistema eléctrico (vehículo)
+HIPOTESIS,CODIGO_CAUSA,212,Falla en las puertas (vehículo)
+HIPOTESIS,CODIGO_CAUSA,213,Ausencia o deficiencia de espejos retrovisores (vehículo)
+HIPOTESIS,CODIGO_CAUSA,214,Vidrios en mal estado (vehículo)
+HIPOTESIS,CODIGO_CAUSA,216,Tanque de combustible mal ubicado (vehículo)
+HIPOTESIS,CODIGO_CAUSA,217,Otra (vehículo)
+HIPOTESIS,CODIGO_CAUSA,301,Ausencia total o parcial de señales (vía)
+HIPOTESIS,CODIGO_CAUSA,302,Ausencia o deficiencia de demarcación (vía)
+HIPOTESIS,CODIGO_CAUSA,303,Superficie lisa (vía)
+HIPOTESIS,CODIGO_CAUSA,304,Superficie húmeda (vía)
+HIPOTESIS,CODIGO_CAUSA,305,Obstáculo en la vía (vía)
+HIPOTESIS,CODIGO_CAUSA,306,Huecos (vía)
+HIPOTESIS,CODIGO_CAUSA,307,Dejar o movilizar semovientes en la vía (vía)
+HIPOTESIS,CODIGO_CAUSA,308,Otras (vía)
+HIPOTESIS,CODIGO_CAUSA,401,Pasar semáforo en rojo (peatón)
+HIPOTESIS,CODIGO_CAUSA,402,Salir por delante de un vehículo (peatón)
+HIPOTESIS,CODIGO_CAUSA,403,Transitar por la derecha en vías rurales (peatón)
+HIPOTESIS,CODIGO_CAUSA,404,Transitar por la calzada (peatón)
+HIPOTESIS,CODIGO_CAUSA,405,Jugar en la vía (peatón)
+HIPOTESIS,CODIGO_CAUSA,406,Cruzar en diagonal (peatón)
+HIPOTESIS,CODIGO_CAUSA,407,Pararse sobre la calzada (peatón)
+HIPOTESIS,CODIGO_CAUSA,408,Cruzar en curva (peatón)
+HIPOTESIS,CODIGO_CAUSA,409,Cruzar sin observar (peatón)
+HIPOTESIS,CODIGO_CAUSA,410,Cruzar en estado de embriaguez (peatón)
+HIPOTESIS,CODIGO_CAUSA,411,Otras (peatón)
+HIPOTESIS,CODIGO_CAUSA,501,Viajar colgado o en los estribos (pasajero o acompañante)
+HIPOTESIS,CODIGO_CAUSA,502,Descender o subir del vehículo en marcha (pasajero o acompañante)
+HIPOTESIS,CODIGO_CAUSA,503,Pasajero embriagado (pasajero o acompañante)
+HIPOTESIS,CODIGO_CAUSA,504,Viajar a la izquierda del conductor (pasajero o acompañante)
+HIPOTESIS,CODIGO_CAUSA,505,Niños en asiento delantero (pasajero o acompañante)
+HIPOTESIS,CODIGO_CAUSA,506,Otra (pasajero o acompañante)
