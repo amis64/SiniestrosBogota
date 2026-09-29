@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block titulo %}Dimensión poblacional{% endblock %}
+
+{% block contenido %}
+<!-- 1. Título y pregunta -->
+<h1>Dimensión poblacional</h1>
+<div class="alert alert-info">
+  <strong>Pregunta de análisis:</strong>
+  ¿Cómo está compuesta y distribuida la población analizada según sus principales características?
+</div>
+<p class="text-muted">
+  La población analizada son las <strong>personas involucradas en siniestros viales</strong> de Bogotá D.C. entre 2015 y 2020
+  (una fila por persona en la hoja ACTOR_VIAL): conductores, motociclistas, pasajeros, peatones y ciclistas.
+</p>
+
+<!-- 2. Variables utilizadas -->
+<div class="card mb-4">
+  <div class="card-header">Variables utilizadas</div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>CONDICION</strong> (hoja ACTOR_VIAL): papel de la persona en el siniestro (conductor, motociclista, pasajero/acompañante, peatón o ciclista). Categórica.</li>
+    <li class="list-group-item"><strong>SEXO</strong> (hoja ACTOR_VIAL): masculino, femenino o sin información. Categórica.</li>
+    <li class="list-group-item"><strong>EDAD</strong> (hoja ACTOR_VIAL): edad en años. Las edades «SIN INFORMACION» y las mayores de 100 años se tratan como vacías. Numérica.</li>
+    <li class="list-group-item"><strong>ESTADO</strong> (hoja ACTOR_VIAL): ileso, herido o muerto. Categórica.</li>
+    <li class="list-group-item"><strong>FECHA / ANIO</strong> (hoja SINIESTROS): fecha del siniestro; se usa el año para filtrar. Temporal.</li>
+    <li class="list-group-item"><strong>CODIGO_ACCIDENTE</strong> (hojas ACTOR_VIAL y SINIESTROS): identifica cada siniestro; sirve para contar siniestros distintos y unir las hojas.</li>
+  </ul>
+</div>
+
+<!-- 3. Filtros interactivos (2) -->
+<form method="get" class="row g-3 mb-4 p-3 bg-light rounded">
+  <div class="col-md-5">
+    <label class="form-label">Año</label>
+    <select name="anio" class="form-select">
+      <option value="Todos">Todos</option>
+      {% for a in anios %}
+        <option value="{{ a }}" {% if a|string == sel_anio %}selected{% endif %}>{{ a }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-5">
+    <label class="form-label">Condición de la persona</label>
+    <select name="condicion" class="form-select">
+      <option value="Todas">Todas</option>
+      {% for clave, etiqueta in condiciones.items() %}
+        <option value="{{ clave }}" {% if clave == sel_cond %}selected{% endif %}>{{ etiqueta }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-primary w-100">Aplicar</button>
+  </div>
+</form>
+
+<!-- 4. Indicadores (3 + total) -->
+<div class="row text-center g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_total }}</h2><p class="mb-0">Personas involucradas en {{ ind_siniestros }} siniestros</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_hombres }}%</h2><p class="mb-0">Hombres (entre quienes tienen sexo registrado)</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_edad }}</h2><p class="mb-0">Edad mediana (años)</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_lesionados }}%</h2><p class="mb-0">Personas heridas o muertas</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- 5. Visualizaciones con interpretación: se agregan en los commits 2 y 3 -->
+<!-- 6. Tabla resumen: commit 3 -->
+<!-- 7. Conocimientos evidentes, limitación y decisión: commit 4 -->
+{% endblock %}
