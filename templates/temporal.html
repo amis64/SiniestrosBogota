@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block titulo %}Dimensión temporal{% endblock %}
+
+{% block contenido %}
+{# Plotly debe cargarse ANTES de las gráficas. Si lo mueven a base.html (<head>), borren esta línea. #}
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+<!-- 1. Título y pregunta -->
+<h1>Dimensión temporal</h1>
+<div class="alert alert-info">
+  <strong>Pregunta de análisis:</strong>
+  ¿Cómo ha cambiado el comportamiento de los siniestros viales en Bogotá durante el periodo disponible (2015-2020)?
+</div>
+
+<!-- 2. Variables utilizadas -->
+<div class="card mb-4">
+  <div class="card-header">Variables utilizadas</div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>FECHA</strong> (hoja SINIESTROS): fecha del siniestro, del 01/01/2015 al 31/12/2020. De ella se obtienen año, trimestre, mes y día de la semana. Temporal.</li>
+    <li class="list-group-item"><strong>HORA</strong> (hoja SINIESTROS): hora del siniestro; se usa la hora entera (0 a 23) y se agrupa en cuatro franjas. Temporal.</li>
+    <li class="list-group-item"><strong>GRAVEDAD</strong> (hoja SINIESTROS): con muertos, con heridos o solo daños. Categórica.</li>
+    <li class="list-group-item"><strong>LOCALIDAD</strong> (de CODIGO_LOCALIDAD, hoja SINIESTROS): localidad donde ocurrió el siniestro; se usa como filtro. Categórica, territorial.</li>
+  </ul>
+</div>
+
+<!-- 3. Filtros interactivos (2) -->
+<form method="get" class="row g-3 mb-2 p-3 bg-light rounded">
+  <div class="col-md-5">
+    <label class="form-label">Gravedad</label>
+    <select name="gravedad" class="form-select">
+      <option value="Todas">Todas</option>
+      {% for g in gravedades %}
+        <option value="{{ g }}" {% if g == sel_grav %}selected{% endif %}>{{ g }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-5">
+    <label class="form-label">Localidad</label>
+    <select name="localidad" class="form-select">
+      <option value="Todas">Todas</option>
+      {% for l in localidades %}
+        <option value="{{ l }}" {% if l == sel_loc %}selected{% endif %}>{{ l }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-primary w-100">Aplicar</button>
+  </div>
+</form>
+<p class="text-muted mb-4">
+  El filtro de gravedad no se aplica a la gráfica 4 ni a la columna «% con muertos» de la tabla, porque ahí se mide justamente la gravedad.
+</p>
+
+<!-- 4. Indicadores -->
+<div class="row text-center g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_total }}</h2><p class="mb-0">Siniestros 2015-2020</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_promedio }}</h2><p class="mb-0">Promedio mensual</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_mes_pico }}</h2><p class="mb-0">Mes con más siniestros ({{ ind_mes_pico_valor }})</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_var_2020 }}</h2><p class="mb-0">Variación 2020 frente a 2019</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- 5. Visualizaciones con interpretación -->
+<p class="text-muted">Las interpretaciones describen la vista completa: Gravedad = Todas y Localidad = Todas. Al aplicar filtros, las cifras de las gráficas cambian.</p>
+<div class="row g-4 mb-4">
+  <div class="col-lg-12">
+    <h4>Evolución mensual de los siniestros (2015-2020)</h4>
+    {{ grafica1|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Entre 2015 y 2019 los siniestros se mantuvieron entre unos 2.000 y 3.300 por mes, con un máximo en noviembre de 2016 (3.323). La serie crece de 31.341 siniestros en 2015 a 36.953 en 2018 y baja levemente en 2019 (34.990). En 2020 se rompe el patrón: abril registra solo 687 siniestros, el mínimo de todo el periodo, y la recuperación es gradual sin volver al nivel previo antes de terminar el año.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>Comparación mes a mes entre años</h4>
+    {{ grafica2|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Las líneas de 2015 a 2019 siguen una forma parecida y todas empiezan en su punto más bajo en enero. La línea de 2020 coincide con las demás en enero y febrero, pero se separa a partir de marzo y cae con fuerza en abril y mayo. En diciembre de 2020 todavía hubo un 20,8% menos siniestros que en diciembre de 2019.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>Siniestros por día de la semana y hora</h4>
+    {{ grafica3|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Los colores más claros se concentran de lunes a sábado entre las 6 y las 19 horas. El viernes es el día con más siniestros (31.537, 16,1%) y el domingo el de menos (19.271, 9,8%). La madrugada, entre la 1 y las 4, es la franja más baja todos los días, y el pico está hacia las 14 horas.</p>
+  </div>
+  <div class="col-lg-12">
+    <h4>% de siniestros con muertos por franja horaria</h4>
+    {{ grafica4|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> En todo el periodo el 1,53% de los siniestros deja muertos (línea verde). La madrugada solo reúne el 7,9% de los siniestros, pero el 3,46% de ellos tiene muertos, más del triple que la tarde (1,09%). La noche (1,97%) también supera el promedio, mientras la mañana y la tarde, con más siniestros, están por debajo.</p>
+  </div>
+</div>
+
+<!-- 6. Tabla resumen (evidencia) -->
+<h3>Resumen por año</h3>
+<div class="table-responsive mb-4">
+  <table class="table table-striped mb-0">
+    <thead><tr><th>Año</th><th>Siniestros</th><th>Variación anual</th><th>Promedio mensual</th><th>% con muertos</th></tr></thead>
+    <tbody>
+      {% for f in tabla %}
+      <tr><td>{{ f.anio }}</td><td>{{ f.siniestros }}</td><td>{{ f.variacion }}</td><td>{{ f.promedio_mes }}</td><td>{{ f.pct_muertos }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- 7. Conocimientos evidentes (3) -->
+<h3>Conocimientos evidentes</h3>
+<div class="accordion mb-4" id="conocimientos">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#c1">Conocimiento 1: El aislamiento de 2020 provocó la mayor caída del periodo</button>
+    </h2>
+    <div id="c1" class="accordion-collapse collapse show" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Cómo cambió la cantidad de siniestros en 2020 frente a los años anteriores?</p>
+        <p><strong>Variables:</strong> FECHA (año y mes) y CODIGO_ACCIDENTE (para contar siniestros), de la hoja SINIESTROS.</p>
+        <p><strong>Procedimiento:</strong> Se contaron los siniestros por mes y por año, y se comparó cada mes de 2020 con el mismo mes de 2019. También se calculó la variación anual y por trimestre.</p>
+        <p><strong>Evidencia:</strong> Gráficas 1 y 2, indicador «Variación 2020 frente a 2019» y tabla resumen por año.</p>
+        <p><strong>Hallazgo:</strong> 2020 tuvo 22.709 siniestros, un 35,1% menos que 2019 (34.990). Enero y febrero de 2020 fueron similares a 2019, pero abril cayó a 687 siniestros, un 75,7% menos que abril de 2019. El segundo trimestre de 2020 tuvo 3.355 siniestros frente a 8.814 del mismo trimestre de 2019, y en diciembre la cifra seguía un 20,8% por debajo.</p>
+        <p><strong>Interpretación:</strong> La caída comienza en marzo de 2020 y coincide con el aislamiento obligatorio por la pandemia de COVID-19, que redujo la circulación de vehículos y personas. La recuperación fue gradual durante el segundo semestre.</p>
+        <p><strong>Utilidad:</strong> Muestra que el volumen de siniestros depende fuertemente de la cantidad de movilidad, y advierte que 2020 no debe usarse como línea base para evaluar metas o programas de seguridad vial.</p>
+        <p class="mb-0"><strong>Limitación:</strong> El conjunto de datos no incluye el volumen de tráfico ni información sobre las medidas de aislamiento, por lo que la relación con la pandemia se infiere por la coincidencia en las fechas; no se puede medir cuánto de la caída se debe a cada factor.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c2">Conocimiento 2: Enero es siempre el mes con menos siniestros</button>
+    </h2>
+    <div id="c2" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Existe un comportamiento repetitivo o estacional a lo largo del año?</p>
+        <p><strong>Variables:</strong> FECHA (año y mes), de la hoja SINIESTROS.</p>
+        <p><strong>Procedimiento:</strong> Se contaron los siniestros de cada mes en cada año entre 2015 y 2019 (se excluyó 2020 por ser atípico), se ordenaron los meses de cada año de menor a mayor y se calculó el promedio de cada mes.</p>
+        <p><strong>Evidencia:</strong> Gráfica 2 (una línea por año) y gráfica 1.</p>
+        <p><strong>Hallazgo:</strong> En los cinco años entre 2015 y 2019, enero fue el mes con menos siniestros. Su promedio fue de 2.323 siniestros, alrededor de un 21% por debajo del promedio de los demás meses (unos 2.940). Febrero y marzo muestran un aumento claro frente a enero todos los años.</p>
+        <p><strong>Interpretación:</strong> Es un patrón estacional estable. Coincide con la temporada de vacaciones de inicio de año, cuando buena parte de la población sale de la ciudad y la actividad escolar y laboral es menor.</p>
+        <p><strong>Utilidad:</strong> Permite planear la asignación de agentes de tránsito y las campañas de prevención según el calendario: menos presión en enero y refuerzo desde febrero, cuando la ciudad retoma su actividad normal.</p>
+        <p class="mb-0"><strong>Limitación:</strong> Los datos no indican cuántos vehículos o personas circulaban en cada mes, así que la relación con las vacaciones es una explicación probable que no se puede comprobar con este conjunto.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c3">Conocimiento 3: En la madrugada hay pocos siniestros, pero son más graves</button>
+    </h2>
+    <div id="c3" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Las horas con más siniestros son también las de siniestros más graves?</p>
+        <p><strong>Variables:</strong> HORA (agrupada en franjas), FECHA (día de la semana) y GRAVEDAD (código 1 = con muertos), de la hoja SINIESTROS.</p>
+        <p><strong>Procedimiento:</strong> Se agrupó la hora en cuatro franjas y se calculó, para cada franja, la participación en el total de siniestros y el porcentaje de siniestros con muertos. El mismo cálculo se hizo por día de la semana.</p>
+        <p><strong>Evidencia:</strong> Gráfica 4 (barras con la línea del promedio) y gráfica 3 (mapa de calor).</p>
+        <p><strong>Hallazgo:</strong> La madrugada (0 a 5 h) concentra solo el 7,9% de los siniestros, pero el 3,46% de ellos deja muertos, frente al 1,09% de la tarde, la franja con más siniestros (36,0%). Lo mismo ocurre con el domingo: es el día con menos siniestros (9,8%), pero el de mayor porcentaje con muertos (2,06%, frente a 1,47% del resto de días).</p>
+        <p><strong>Interpretación:</strong> El volumen y la gravedad se comportan de forma opuesta en el tiempo: en las horas y días de mayor movimiento hay más siniestros pero menos graves, y en los momentos de menor movimiento hay menos siniestros pero más letales.</p>
+        <p><strong>Utilidad:</strong> Sugiere dos estrategias según el horario: gestión del tráfico en las horas diurnas de más volumen y controles orientados a reducir la gravedad (velocidad, alcohol) en la madrugada, la noche y los fines de semana.</p>
+        <p class="mb-0"><strong>Limitación:</strong> La hoja SINIESTROS no registra la causa, así que no puede concluirse por qué la madrugada es más grave; habría que cruzarla con la hoja HIPOTESIS. Además, la madrugada tiene pocos casos (535 siniestros con muertos en seis años), lo que hace el porcentaje más sensible.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. Limitación y decisión -->
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="alert alert-warning">
+      <strong>Limitación del análisis:</strong>
+      el periodo disponible es corto (seis años, de 2015 a 2020) y termina en 2020, un año atípico por la pandemia, por lo que no permite saber si la tendencia volvió a subir después ni confirmar tendencias de largo plazo. Además, los conteos no se comparan con el volumen de tráfico de cada periodo, así que un mes con más siniestros no es necesariamente un mes más peligroso.
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="alert alert-success">
+      <strong>Posible decisión sustentada en los datos:</strong>
+      programar los operativos de control de velocidad y alcoholemia en la madrugada, la noche y los domingos, donde la proporción de siniestros con muertos es mayor (hasta 3,46%, frente a 1,53% en promedio), y concentrar la gestión del tráfico de lunes a sábado entre las 6 y las 19 horas, cuando ocurre la mayoría de los siniestros. Para evaluar resultados, usar 2015-2019 como referencia y no 2020.
+    </div>
+  </div>
+</div>
+{% endblock %}
