@@ -2,6 +2,9 @@
 {% block titulo %}Dimensión poblacional{% endblock %}
 
 {% block contenido %}
+{# Plotly debe cargarse ANTES de las gráficas. Si lo mueven a base.html (<head>), borren esta línea. #}
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
 <!-- 1. Título y pregunta -->
 <h1>Dimensión poblacional</h1>
 <div class="alert alert-info">
@@ -75,7 +78,21 @@
   </div>
 </div>
 
-<!-- 5. Visualizaciones con interpretación: se agregan en los commits 2 y 3 -->
+<!-- 5. Visualizaciones con interpretación (gráficas 1 y 2: commit 2; gráficas 3 y 4: commit 3) -->
+<p class="text-muted">Las interpretaciones describen la vista completa: Año = Todos y Condición = Todas. Al aplicar filtros, las cifras de las gráficas cambian. El filtro de condición no se aplica a la gráfica 1, porque esa gráfica mide justamente la condición.</p>
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <h4>Personas involucradas por condición</h4>
+    {{ grafica1|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Los conductores son el grupo predominante con 306.534 personas (72,6% del total). Le siguen los motociclistas (52.290; 12,4%) y los pasajeros o acompañantes (27.365; 6,5%). Los peatones (23.447; 5,5%) y los ciclistas (12.780; 3,0%) son los grupos minoritarios. Entre conductores y motociclistas reúnen 85 de cada 100 personas registradas.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>Personas involucradas por sexo</h4>
+    {{ grafica2|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> El 82,3% de las personas son hombres (347.718), el 15,4% mujeres (65.059) y el 2,3% no tiene el sexo registrado (9.639). Entre quienes sí tienen sexo registrado, los hombres son el 84,2%: aparecen unas 5 veces más que las mujeres. Esta gráfica sí responde al filtro de condición, lo que permite ver, por ejemplo, que entre los pasajeros predominan las mujeres.</p>
+  </div>
+</div>
+
 <!-- 6. Tabla resumen: commit 3 -->
 <!-- 7. Conocimientos evidentes, limitación y decisión: commit 4 -->
 {% endblock %}
