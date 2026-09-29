@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+
+<!-- 1. Portada -->
+<section class="p-5 mb-4 bg-light rounded-3 text-center">
+  <h1 class="display-5 fw-bold">Siniestros viales en Bogotá D.C.</h1>
+  <p class="lead">Análisis exploratorio de los siniestros viales ocurridos en Bogotá entre 2015 y 2020, con datos abiertos de Colombia</p>
+  <a href="{{ url_for('poblacional.poblacional') }}" class="btn btn-primary btn-lg">Ver análisis</a>
+</section>
+
+<!-- 2. Cifras clave -->
+<section class="row text-center g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card"><div class="card-body"><h2>196.152</h2><p class="mb-0">Siniestros</p></div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card"><div class="card-body"><h2>422.416</h2><p class="mb-0">Personas involucradas</p></div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card"><div class="card-body"><h2>371.605</h2><p class="mb-0">Vehículos</p></div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card"><div class="card-body"><h2>20</h2><p class="mb-0">Localidades</p></div></div>
+  </div>
+</section>
+
+<!-- 3. Descripción del conjunto de datos -->
+<section class="mb-4">
+  <h2>Conjunto de datos</h2>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <ul class="list-group">
+        <li class="list-group-item"><strong>Nombre:</strong> Siniestros Viales Consolidados Bogotá D.C.</li>
+        <li class="list-group-item"><strong>Tema:</strong> Seguridad vial y movilidad</li>
+        <li class="list-group-item"><strong>Población:</strong> siniestros viales ocurridos en Bogotá D.C., con las personas y los vehículos involucrados</li>
+        <li class="list-group-item"><strong>Entidad que publica:</strong> Alcaldía Mayor de Bogotá D.C. (Datos Abiertos Bogotá)</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <ul class="list-group">
+        <li class="list-group-item"><strong>Registros:</strong> 196.152 siniestros (hoja principal)</li>
+        <li class="list-group-item"><strong>Variables:</strong> 28 en total (10 en la hoja principal)</li>
+        <li class="list-group-item"><strong>Periodo:</strong> 1 de enero de 2015 a 31 de diciembre de 2020</li>
+        <li class="list-group-item">
+          <strong>Fuente:</strong>
+          <a href="https://www.datos.gov.co/dataset/Siniestros-Viales-Consolidados-Bogot-D-C-/vftc-p83w/about_data" target="_blank" rel="noopener">datos.gov.co</a>
+          · Licencia CC BY 4.0
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Estructura del archivo -->
+<section class="mb-4">
+  <h2>Estructura del archivo</h2>
+  <p class="text-muted">El archivo Excel tiene cinco hojas que se relacionan por <code>CODIGO_ACCIDENTE</code>.</p>
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead><tr><th>Hoja</th><th>Qué contiene</th><th>Registros</th><th>Variables</th></tr></thead>
+      <tbody>
+        <tr><td>SINIESTROS</td><td>Fecha, hora, gravedad, clase, localidad, dirección y diseño del lugar</td><td>196.152</td><td>10</td></tr>
+        <tr><td>ACTOR_VIAL</td><td>Condición, estado, edad y sexo de cada persona involucrada</td><td>422.416</td><td>8</td></tr>
+        <tr><td>VEHICULOS</td><td>Clase, servicio, modalidad y si huyó del lugar</td><td>371.605</td><td>7</td></tr>
+        <tr><td>HIPOTESIS</td><td>Causa probable del siniestro</td><td>233.819</td><td>3</td></tr>
+        <tr><td>DICCIONARIO</td><td>Significado de cada código</td><td>211</td><td>4</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 5. Objetivo -->
+<section class="mb-4">
+  <h2>Objetivo</h2>
+  <p>Identificar conocimientos evidentes sobre los siniestros viales de Bogotá mediante indicadores,
+     comparaciones y visualizaciones, analizando la población desde cuatro dimensiones.</p>
+</section>
+
+<!-- 6. Las cuatro dimensiones -->
+<section class="mb-4">
+  <h2>Dimensiones de análisis</h2>
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <h5 class="card-title">Poblacional</h5>
+        <p class="card-text">¿Cómo está compuesta y distribuida la población analizada?</p>
+        <a href="{{ url_for('poblacional.poblacional') }}" class="btn btn-outline-primary">Abrir</a>
+      </div></div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <h5 class="card-title">Territorial</h5>
+        <p class="card-text">¿Cómo se distribuyen los siniestros entre las localidades?</p>
+        <a href="{{ url_for('territorial.territorial') }}" class="btn btn-outline-primary">Abrir</a>
+      </div></div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <h5 class="card-title">Temporal</h5>
+        <p class="card-text">¿Cómo ha cambiado el comportamiento entre 2015 y 2020?</p>
+        <a href="{{ url_for('temporal.temporal') }}" class="btn btn-outline-primary">Abrir</a>
+      </div></div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <h5 class="card-title">Relacional</h5>
+        <p class="card-text">¿Qué relaciones hay al cruzar tres o más variables?</p>
+        <a href="{{ url_for('multivariada.multivariada') }}" class="btn btn-outline-primary">Abrir</a>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Equipo -->
+<section class="mb-4">
+  <h2>Equipo</h2>
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead><tr><th>#</th><th>Integrante</th><th>Dimensión</th><th>Responsabilidad técnica</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>[Nombre completo]</td><td>Poblacional</td><td>Administración del repositorio</td></tr>
+        <tr><td>2</td><td>[Nombre completo]</td><td>Territorial</td><td>Configuración de Flask</td></tr>
+        <tr><td>3</td><td>[Nombre completo]</td><td>Temporal</td><td>Publicación de la aplicación</td></tr>
+        <tr><td>4</td><td>[Nombre completo]</td><td>Relacional y multivariada</td><td>Informe técnico</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 8. Enlaces -->
+<section>
+  <a href="[URL del repositorio en GitHub]" class="btn btn-dark" target="_blank" rel="noopener">Repositorio en GitHub</a>
+</section>
+
+{% endblock %}

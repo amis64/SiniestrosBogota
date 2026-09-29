@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block titulo %}Dimensión territorial{% endblock %}
+
+{% block contenido %}
+{# Plotly debe cargarse ANTES de las gráficas. Si lo mueven a base.html (<head>), borren esta línea. #}
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+<!-- 1. Título y pregunta -->
+<h1>Dimensión territorial</h1>
+<div class="alert alert-info">
+  <strong>Pregunta de análisis:</strong>
+  ¿Cómo se distribuye la población y sus principales características entre los territorios disponibles?
+</div>
+
+<!-- 2. Variables utilizadas -->
+<div class="card mb-4">
+  <div class="card-header">Variables utilizadas</div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>LOCALIDAD</strong> (de CODIGO_LOCALIDAD, hoja SINIESTROS): una de las 20 localidades de Bogotá donde ocurrió el siniestro. Categórica, territorial.</li>
+    <li class="list-group-item"><strong>GRAVEDAD</strong> (hoja SINIESTROS): con muertos, con heridos o solo daños. Categórica.</li>
+    <li class="list-group-item"><strong>FECHA / ANIO</strong> (hoja SINIESTROS): fecha del siniestro, se usa el año para filtrar. Temporal.</li>
+    <li class="list-group-item"><strong>EDAD</strong> (hoja ACTOR_VIAL): edad de cada persona involucrada. Numérica.</li>
+  </ul>
+</div>
+
+<!-- 3. Filtros interactivos (2) -->
+<form method="get" class="row g-3 mb-2 p-3 bg-light rounded">
+  <div class="col-md-5">
+    <label class="form-label">Gravedad</label>
+    <select name="gravedad" class="form-select">
+      <option value="Todas">Todas</option>
+      {% for g in gravedades %}
+        <option value="{{ g }}" {% if g == sel_grav %}selected{% endif %}>{{ g }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-5">
+    <label class="form-label">Año</label>
+    <select name="anio" class="form-select">
+      <option value="Todos">Todos</option>
+      {% for a in anios %}
+        <option value="{{ a }}" {% if a|string == sel_anio %}selected{% endif %}>{{ a }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-primary w-100">Aplicar</button>
+  </div>
+</form>
+<p class="text-muted mb-4">
+  El filtro de gravedad no se aplica a la gráfica 3, porque esa gráfica mide justamente la gravedad.
+</p>
+
+<!-- 4. Indicadores (3 + total) -->
+<div class="row text-center g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_total }}</h2><p class="mb-0">Siniestros analizados</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_territorios }}</h2><p class="mb-0">Localidades con registros</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_top }}</h2><p class="mb-0">Más siniestros ({{ ind_top_valor }})</p>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_pct_top5 }}%</h2><p class="mb-0">Concentración del top 5</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- 5. Visualizaciones con interpretación -->
+<p class="text-muted">Las interpretaciones describen la vista completa: Año = Todos y Gravedad = Todas. Al aplicar filtros, las cifras de las gráficas cambian.</p>
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <h4>Siniestros por localidad</h4>
+    {{ grafica1|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Kennedy lidera con 22.282 siniestros (11,4% del total), seguida de Engativá (19.777) y Usaquén (19.621). En el extremo contrario están La Candelaria (1.003) y Sumapaz (solo 7). Kennedy registra unas 22 veces más siniestros que La Candelaria, lo que muestra una distribución muy desigual entre territorios.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>Participación porcentual por localidad</h4>
+    {{ grafica2|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Cinco localidades (Kennedy, Engativá, Usaquén, Suba y Fontibón) reúnen el 48,5% de los siniestros y las diez primeras el 76,9%. Las otras diez localidades se reparten apenas el 23,1% restante.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>% de siniestros con muertos por localidad</h4>
+    {{ grafica3|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> En Bogotá el 1,53% de los siniestros deja muertos (línea verde). Usme (3,15%), Ciudad Bolívar (2,88%), Rafael Uribe Uribe (2,37%) y San Cristóbal (2,22%) superan ese promedio, mientras Chapinero (0,75%) y Usaquén (0,81%) tienen los valores más bajos. 9 de las 19 localidades comparadas están por encima del promedio. Se excluyen las localidades con menos de {{ min_siniestros }} siniestros (Sumapaz).</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>Edad mediana de las personas involucradas</h4>
+    {{ grafica4|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> La edad mediana de las personas involucradas es de 36 años en Bogotá y solo varía entre 33 años (Ciudad Bolívar) y 37 años (Barrios Unidos). El perfil de edad es muy parecido en todas las localidades. El tamaño del punto indica cuántas personas hay registradas.</p>
+  </div>
+</div>
+
+<!-- 6. Tabla resumen (evidencia) -->
+<h3>Resumen por localidad</h3>
+<div class="table-responsive mb-4" style="max-height: 460px; overflow-y: auto;">
+  <table class="table table-striped mb-0">
+    <thead><tr><th>Localidad</th><th>Siniestros</th><th>Participación</th><th>Edad mediana</th></tr></thead>
+    <tbody>
+      {% for f in tabla %}
+      <tr><td>{{ f.localidad }}</td><td>{{ f.siniestros }}</td><td>{{ f.participacion }}</td><td>{{ f.edad }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- 7. Conocimientos evidentes (3) -->
+<h3>Conocimientos evidentes</h3>
+<div class="accordion mb-4" id="conocimientos">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#c1">Conocimiento 1: Los siniestros se concentran en pocas localidades</button>
+    </h2>
+    <div id="c1" class="accordion-collapse collapse show" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Los siniestros se reparten de forma pareja entre las 20 localidades o se concentran en pocas?</p>
+        <p><strong>Variables:</strong> LOCALIDAD (de CODIGO_LOCALIDAD, traducida con la hoja DICCIONARIO) y CODIGO_ACCIDENTE (para contar siniestros).</p>
+        <p><strong>Procedimiento:</strong> Se contó el número de siniestros por localidad, se calculó su porcentaje sobre los 196.152 registros y se sumó el porcentaje de las 5 y de las 10 localidades con más siniestros. Luego se repitió el cálculo año por año con el filtro de año.</p>
+        <p><strong>Evidencia:</strong> Gráficas 1 y 2, indicador «Concentración del top 5» y tabla resumen por localidad.</p>
+        <p><strong>Hallazgo:</strong> Cinco localidades concentran el 48,5% de los siniestros y diez el 76,9%. Kennedy es la primera con 22.282 (11,4%) y aparece en el primer lugar en cada uno de los seis años. El peso del top 5 se mantiene entre 47,3% y 49,3% durante todo el periodo.</p>
+        <p><strong>Interpretación:</strong> La accidentalidad no se reparte de forma pareja: unas pocas localidades (Kennedy, Engativá, Usaquén, Suba y Fontibón) acumulan casi la mitad de los casos, y esa concentración es estable en el tiempo. Puede estar relacionada con su tamaño y flujo vehicular, pero esto es una hipótesis que estos datos no permiten comprobar.</p>
+        <p><strong>Utilidad:</strong> Sirve para priorizar controles de velocidad, cámaras, señalización y campañas de prevención en las cinco localidades que concentran cerca de la mitad de los siniestros.</p>
+        <p class="mb-0"><strong>Limitación:</strong> Son conteos absolutos. Sin población, kilómetros de vía o tráfico de cada localidad no puede concluirse que sean más peligrosas, solo que allí ocurren más siniestros.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c2">Conocimiento 2: Más siniestros no significa siniestros más graves</button>
+    </h2>
+    <div id="c2" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Las localidades con más siniestros son también las que tienen siniestros más graves?</p>
+        <p><strong>Variables:</strong> LOCALIDAD y GRAVEDAD (código 1 = con muertos), de la hoja SINIESTROS.</p>
+        <p><strong>Procedimiento:</strong> Por cada localidad se dividió el número de siniestros con muertos entre el total de siniestros y se comparó con el promedio de Bogotá (1,53%). Se excluyeron las localidades con menos de 100 siniestros (Sumapaz) porque su porcentaje no es confiable.</p>
+        <p><strong>Evidencia:</strong> Gráfica 3 (barras con la línea del promedio de Bogotá).</p>
+        <p><strong>Hallazgo:</strong> No coinciden volumen y gravedad. Usme tiene el mayor porcentaje de siniestros con muertos (3,15%, más del doble del promedio) pero es la 17.ª localidad en volumen (4.026 siniestros). Usaquén es la 3.ª en volumen y solo tiene 0,81%. Kennedy, la primera en volumen, tiene 1,87%.</p>
+        <p><strong>Interpretación:</strong> Tener muchos siniestros y tener siniestros graves son problemas distintos. Localidades con pocos casos, como Usme, Ciudad Bolívar, Rafael Uribe Uribe y San Cristóbal, tienen una proporción de muertes superior al promedio.</p>
+        <p><strong>Utilidad:</strong> Permite usar dos criterios de priorización: volumen de siniestros (Kennedy, Engativá, Usaquén) para control general, y proporción de muertes (Usme, Ciudad Bolívar, Rafael Uribe Uribe, San Cristóbal) para intervenciones que reduzcan la gravedad.</p>
+        <p class="mb-0"><strong>Limitación:</strong> El conjunto no informa las causas de la mayor gravedad (velocidad, tipo de vía, tipo de vehículo). Además, con pocos casos el porcentaje es sensible: en Usme corresponde a 127 siniestros con muertos.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c3">Conocimiento 3: La edad casi no cambia entre localidades</button>
+    </h2>
+    <div id="c3" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Cambia el perfil de edad de las personas involucradas según la localidad?</p>
+        <p><strong>Variables:</strong> EDAD (hoja ACTOR_VIAL) y LOCALIDAD (hoja SINIESTROS, unida mediante CODIGO_ACCIDENTE).</p>
+        <p><strong>Procedimiento:</strong> Se unieron las hojas ACTOR_VIAL y SINIESTROS por CODIGO_ACCIDENTE para asignar localidad a cada persona. Las edades «SIN INFORMACION» y las mayores de 100 años se dejaron como vacías, y se calculó la mediana de edad por localidad (solo localidades con al menos 100 personas).</p>
+        <p><strong>Evidencia:</strong> Gráfica 4 (puntos por localidad) y columna «Edad mediana» de la tabla resumen.</p>
+        <p><strong>Hallazgo:</strong> La edad mediana en Bogotá es de 36 años y las localidades se mueven en un rango de solo 4 años: de 33 (Ciudad Bolívar) a 37 (Barrios Unidos).</p>
+        <p><strong>Interpretación:</strong> Los siniestros involucran sobre todo a adultos en edad productiva en todas las localidades. El territorio casi no cambia el perfil de edad; las diferencias entre localidades están en el volumen y la gravedad, no en la edad.</p>
+        <p><strong>Utilidad:</strong> Las campañas de prevención dirigidas a adultos de alrededor de 30 a 40 años pueden ser parecidas en toda la ciudad, mientras que la asignación de recursos sí debe diferenciarse por localidad.</p>
+        <p class="mb-0"><strong>Limitación:</strong> La mediana no distingue el rol de la persona (conductor, motociclista, peatón) ni su estado. Además, 8.230 personas no tienen una edad válida y quedaron fuera del cálculo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. Limitación y decisión -->
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="alert alert-warning">
+      <strong>Limitación del análisis:</strong>
+      los conteos son absolutos y no consideran la población, la longitud vial ni el tráfico de cada localidad, por lo que no permiten decir qué localidad es más peligrosa. Además, el periodo termina en 2020, año atípico con 22.709 siniestros frente a unos 35.000 en los años anteriores; Sumapaz solo tiene 7 registros y 8.230 personas no tienen una edad válida.
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="alert alert-success">
+      <strong>Posible decisión sustentada en los datos:</strong>
+      priorizar controles y campañas de prevención en Kennedy, Engativá, Usaquén, Suba y Fontibón, que reúnen el 48,5% de los siniestros, y complementar con intervenciones para reducir la gravedad en Usme, Ciudad Bolívar, Rafael Uribe Uribe y San Cristóbal, donde la proporción de siniestros con muertos supera el promedio de Bogotá (1,53%).
+    </div>
+  </div>
+</div>
+{% endblock %}
