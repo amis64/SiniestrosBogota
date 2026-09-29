@@ -78,21 +78,46 @@
   </div>
 </div>
 
-<!-- 5. Visualizaciones con interpretación (gráficas 1 y 2: commit 2; gráficas 3 y 4: commit 3) -->
-<p class="text-muted">Las interpretaciones describen la vista completa: Año = Todos y Condición = Todas. Al aplicar filtros, las cifras de las gráficas cambian. El filtro de condición no se aplica a la gráfica 1, porque esa gráfica mide justamente la condición.</p>
+<!-- 5. Visualizaciones con interpretación -->
+<p class="text-muted">Las interpretaciones describen la vista completa: Año = Todos y Condición = Todas. Al aplicar filtros, las cifras de las gráficas cambian. El filtro de condición no se aplica a las gráficas 1 y 4 ni a la tabla, porque comparan las condiciones entre sí.</p>
 <div class="row g-4 mb-4">
   <div class="col-lg-6">
     <h4>Personas involucradas por condición</h4>
     {{ grafica1|safe }}
-    <p class="text-muted"><strong>Interpretación:</strong> Los conductores son el grupo predominante con 306.534 personas (72,6% del total). Le siguen los motociclistas (52.290; 12,4%) y los pasajeros o acompañantes (27.365; 6,5%). Los peatones (23.447; 5,5%) y los ciclistas (12.780; 3,0%) son los grupos minoritarios. Entre conductores y motociclistas reúnen 85 de cada 100 personas registradas.</p>
+    <p class="text-muted"><strong>Interpretación:</strong> Los conductores son el grupo predominante con 306.534 personas (72,6% del total). Le siguen los motociclistas (52.290; 12,4%) y los pasajeros o acompañantes (27.365; 6,5%). Los peatones (23.447; 5,6%) y los ciclistas (12.780; 3,0%) son los grupos minoritarios. Entre conductores y motociclistas reúnen 85 de cada 100 personas registradas.</p>
   </div>
   <div class="col-lg-6">
     <h4>Personas involucradas por sexo</h4>
     {{ grafica2|safe }}
     <p class="text-muted"><strong>Interpretación:</strong> El 82,3% de las personas son hombres (347.718), el 15,4% mujeres (65.059) y el 2,3% no tiene el sexo registrado (9.639). Entre quienes sí tienen sexo registrado, los hombres son el 84,2%: aparecen unas 5 veces más que las mujeres. Esta gráfica sí responde al filtro de condición, lo que permite ver, por ejemplo, que entre los pasajeros predominan las mujeres.</p>
   </div>
+  <div class="col-lg-6">
+    <h4>Distribución de la edad</h4>
+    {{ grafica3|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> La mayor cantidad de personas está en el rango de 25 a 29 años (62.548; 15,1% de quienes tienen edad válida), seguido por los de 30 a 34 (58.233) y 35 a 39 (53.507). Las edades entre 20 y 39 años suman el 54,8% de las personas. A partir de los 40 años la cantidad baja de forma constante, y los menores de 18 años (2,6%) y los mayores de 60 (7,7%) son minorías. Esta gráfica sí responde a los dos filtros y excluye a las 8.230 personas sin edad válida.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>Estado de las personas según su condición</h4>
+    {{ grafica4|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> La gravedad depende mucho de la condición. El 97,9% de los conductores sale ileso, mientras que el 93,9% de los peatones resulta herido y otro 6,1% muere. Entre los ciclistas, el 78,6% queda herido y el 3,1% muere; entre los motociclistas, el 55,4% queda herido y el 1,7% muere. Casi todos los pasajeros o acompañantes (98,9%) resultan heridos. Los porcentajes menores de 5% no se rotulan en la barra; se pueden ver en la tabla resumen o al pasar el cursor.</p>
+  </div>
 </div>
 
-<!-- 6. Tabla resumen: commit 3 -->
+<!-- 6. Tabla resumen (evidencia) -->
+<h3>Resumen por condición</h3>
+<div class="table-responsive mb-4">
+  <table class="table table-striped mb-0">
+    <thead>
+      <tr><th>Condición</th><th>Personas</th><th>Participación</th><th>Hombres</th><th>Edad mediana</th><th>Heridas</th><th>Muertas</th></tr>
+    </thead>
+    <tbody>
+      {% for f in tabla %}
+      <tr><td>{{ f.condicion }}</td><td>{{ f.personas }}</td><td>{{ f.participacion }}</td><td>{{ f.hombres }}</td><td>{{ f.edad }}</td><td>{{ f.heridas }}</td><td>{{ f.muertas }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="text-muted mb-4">El porcentaje de hombres se calcula sobre las personas con sexo registrado. La tabla respeta el filtro de año.</p>
+
 <!-- 7. Conocimientos evidentes, limitación y decisión: commit 4 -->
 {% endblock %}

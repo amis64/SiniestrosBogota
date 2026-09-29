@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly.express as px
 from flask import Blueprint, render_template, request
 
@@ -20,6 +21,12 @@ SEXOS = {
     "FEMENINO": "Femenino",
     "SIN INFORMACION": "Sin información",
 }
+
+ESTADOS = {"ILESO": "Ileso", "HERIDO": "Herido", "MUERTO": "Muerto"}
+
+# Rangos de edad de 5 años; el último (95-100) recoge hasta el máximo válido (100).
+_BORDES = list(range(0, 100, 5)) + [101]
+_RANGOS = [f"{b}-{b + 4}" for b in range(0, 95, 5)] + ["95-100"]
 
 
 def _html(fig):
@@ -71,7 +78,7 @@ def poblacional():
     c = base["CONDICION"].value_counts()
     t1 = c.rename_axis("clave").reset_index(name="personas")
     t1["condicion"] = t1["clave"].map(CONDICIONES)
-    t1["pct"] = (t1["personas"] / max(len(base), 1) * 100).round(2)
+    t1["pct"] = t1["personas"] / max(len(base), 1) * 100
     t1 = t1.sort_values("personas")
     g1 = px.bar(t1, x="personas", y="condicion", orientation="h", height=380,
                 text=[f"{_miles(n)} ({_decimal(p)}%)" for n, p in zip(t1["personas"], t1["pct"])],
@@ -90,6 +97,52 @@ def poblacional():
     g2.update_traces(textinfo="label+percent", sort=False, textfont_size=13)
     g2.update_layout(showlegend=False, margin=dict(l=10, r=10, t=10, b=10))
 
+    # ---------------- Gráfica 3: distribución de la edad por rangos de 5 años ----------------
+    rangos = pd.cut(d["EDAD"].dropna(), bins=_BORDES, right=False, labels=_RANGOS)
+    t3 = rangos.value_counts().reindex(_RANGOS, fill_value=0).rename_axis("rango").reset_index(name="personas")
+    g3 = px.bar(t3, x="rango", y="personas", height=380, labels={"rango": "Rango de edad", "personas": "Personas"})
+    g3.update_traces(marker_color="#c6ff3d", hovertemplate="%{x} años<br>%{y:,} personas<extra></extra>")
+    g3.update_layout(xaxis_title="Rango de edad (años)", yaxis_title="Personas", bargap=0.08)
+
+    # ---------------- Gráfica 4: estado de la persona según su condición ----------------
+    # Usa 'base' (sin filtrar por condición) porque compara las condiciones entre sí.
+    cruce = pd.crosstab(base["CONDICION"], base["ESTADO"])
+    for est in ESTADOS:
+        if est not in cruce.columns:
+            cruce[est] = 0
+    pct = cruce[list(ESTADOS)].div(cruce[list(ESTADOS)].sum(axis=1), axis=0) * 100
+    t4 = pct.reset_index().melt(id_vars="CONDICION", var_name="estado", value_name="pct")
+    t4["condicion"] = t4["CONDICION"].map(CONDICIONES)
+    t4["estado"] = t4["estado"].map(ESTADOS)
+    t4["texto"] = t4["pct"].map(lambda x: f"{_decimal(x)}%" if x >= 5 else "")
+    orden = [CONDICIONES[k] for k in CONDICIONES if k in cruce.index][::-1]
+    g4 = px.bar(t4, x="pct", y="condicion", color="estado", orientation="h", text="texto", height=380,
+                category_orders={"condicion": orden, "estado": ["Ileso", "Herido", "Muerto"]},
+                color_discrete_map={"Ileso": "#38e8ff", "Herido": "#ffb547", "Muerto": "#ff4fa3"},
+                labels={"pct": "% de personas", "condicion": "", "estado": "Estado"})
+    g4.update_traces(textposition="inside", insidetextanchor="middle",
+                     hovertemplate="%{y} - %{fullData.name}: %{x:.2f}%<extra></extra>")
+    g4.update_layout(barmode="stack", xaxis_title="% de las personas de cada condición", yaxis_title="",
+                     xaxis_range=[0, 100], legend_title_text="")
+
+    # ---------------- Tabla resumen por condición (año seleccionado, todas las condiciones) ----------------
+    tabla = []
+    for clave, etiqueta in CONDICIONES.items():
+        g = base[base["CONDICION"] == clave]
+        if g.empty:
+            continue
+        cs = g[g["SEXO"] != "SIN INFORMACION"]
+        med = g["EDAD"].median()
+        tabla.append({
+            "condicion": etiqueta,
+            "personas": _miles(len(g)),
+            "participacion": _decimal(len(g) / max(len(base), 1) * 100) + "%",
+            "hombres": _decimal((cs["SEXO"] == "MASCULINO").mean() * 100) + "%" if len(cs) else "-",
+            "edad": f"{med:.0f}" if med == med else "-",
+            "heridas": _decimal((g["ESTADO"] == "HERIDO").mean() * 100) + "%",
+            "muertas": _decimal((g["ESTADO"] == "MUERTO").mean() * 100, 2) + "%",
+        })
+
     return render_template(
         "poblacional.html",
         anios=anios,
@@ -103,4 +156,7 @@ def poblacional():
         ind_lesionados=_decimal(pct_lesionados),
         grafica1=_html(g1),
         grafica2=_html(g2),
+        grafica3=_html(g3),
+        grafica4=_html(g4),
+        tabla=tabla,
     )
