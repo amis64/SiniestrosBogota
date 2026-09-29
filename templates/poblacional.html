@@ -99,7 +99,7 @@
   <div class="col-lg-6">
     <h4>Estado de las personas según su condición</h4>
     {{ grafica4|safe }}
-    <p class="text-muted"><strong>Interpretación:</strong> La gravedad depende mucho de la condición. El 97,9% de los conductores sale ileso, mientras que el 93,9% de los peatones resulta herido y otro 6,1% muere. Entre los ciclistas, el 78,6% queda herido y el 3,1% muere; entre los motociclistas, el 55,4% queda herido y el 1,7% muere. Casi todos los pasajeros o acompañantes (98,9%) resultan heridos. Los porcentajes menores de 5% no se rotulan en la barra; se pueden ver en la tabla resumen o al pasar el cursor.</p>
+    <p class="text-muted"><strong>Interpretación:</strong> La gravedad depende mucho de la condición. El 97,9% de los conductores sale ileso, mientras que el 93,9% de los peatones resulta herido y otro 6,1% muere. Entre los ciclistas, el 78,6% queda herido y el 3,1% muere; entre los motociclistas, el 55,4% queda herido y el 1,7% muere. Los pasajeros o acompañantes y los peatones casi no tienen personas ilesas (solo 2 en cada grupo), lo que sugiere que las personas ilesas de esas dos condiciones no se registran; por eso sus porcentajes de heridos no son comparables con los de conductores y motociclistas. Los porcentajes menores de 5% no se rotulan en la barra; se pueden ver en la tabla resumen o al pasar el cursor.</p>
   </div>
 </div>
 
@@ -119,5 +119,75 @@
 </div>
 <p class="text-muted mb-4">El porcentaje de hombres se calcula sobre las personas con sexo registrado. La tabla respeta el filtro de año.</p>
 
-<!-- 7. Conocimientos evidentes, limitación y decisión: commit 4 -->
+<!-- 7. Conocimientos evidentes (3) -->
+<h3>Conocimientos evidentes</h3>
+<div class="accordion mb-4" id="conocimientos">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#c1">Conocimiento 1: Los conductores son la gran mayoría de las personas involucradas</button>
+    </h2>
+    <div id="c1" class="accordion-collapse collapse show" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Qué papel tienen las personas que se ven involucradas en los siniestros y cómo se reparten entre las categorías?</p>
+        <p><strong>Variables:</strong> CONDICION (hoja ACTOR_VIAL). Cada fila de la hoja es una persona.</p>
+        <p><strong>Procedimiento:</strong> Se contó el número de personas por condición sobre las 422.416 filas y se calculó el porcentaje de cada una. Luego se repitió el cálculo año por año con el filtro de año.</p>
+        <p><strong>Evidencia:</strong> Gráfica 1 y tabla «Resumen por condición».</p>
+        <p><strong>Hallazgo:</strong> Los conductores son 306.534 personas (72,6%) y los motociclistas 52.290 (12,4%); juntos reúnen 85 de cada 100. Los pasajeros o acompañantes son el 6,5%, los peatones el 5,6% y los ciclistas el 3,0%. Entre 2015 y 2019 los conductores se mantienen entre 70,9% y 74,8%, y en 2020 bajan a 69,3%.</p>
+        <p><strong>Interpretación:</strong> La población analizada es sobre todo gente que conduce un vehículo. Quienes se desplazan como motociclistas, peatones o ciclistas son una de cada cinco personas (21,0%), y su peso sube a 24,5% en 2020, frente a un rango de 19,2% a 21,9% entre 2015 y 2019.</p>
+        <p><strong>Utilidad:</strong> Permite dirigir las campañas de seguridad vial de mayor alcance a los conductores, que son el grupo más numeroso, y tratar por separado a los grupos minoritarios, que tienen otras necesidades.</p>
+        <p class="mb-0"><strong>Limitación:</strong> Son personas registradas en siniestros, no toda la población que se mueve por Bogotá. Que haya más conductores no significa que conducir sea más riesgoso, solo que hay más conductores en las vías. Además, 148 siniestros no tienen ninguna persona registrada.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c2">Conocimiento 2: La población es mayoritariamente masculina y de 20 a 39 años</button>
+    </h2>
+    <div id="c2" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Cómo se distribuyen el sexo y la edad de las personas involucradas?</p>
+        <p><strong>Variables:</strong> SEXO y EDAD (hoja ACTOR_VIAL).</p>
+        <p><strong>Procedimiento:</strong> Se calculó el porcentaje de cada sexo sobre las 422.416 personas y también sobre las que tienen sexo registrado. Las edades «SIN INFORMACION» y las mayores de 100 años se dejaron vacías; con el resto se agrupó por rangos de 5 años y se calculó la mediana. Los cálculos se repitieron por año.</p>
+        <p><strong>Evidencia:</strong> Gráficas 2 y 3 y los indicadores de hombres y edad mediana.</p>
+        <p><strong>Hallazgo:</strong> El 82,3% son hombres (347.718) y el 15,4% mujeres (65.059); entre quienes tienen sexo registrado, los hombres son el 84,2%. La edad mediana es de 36 años y el rango más frecuente es 25 a 29 años (15,1%). Las edades entre 20 y 39 años suman el 54,8%; los menores de 18 años son el 2,6% y los mayores de 60, el 7,7%. Estos valores casi no cambian entre años: los hombres oscilan entre 82,5% y 85,4% y la edad mediana entre 35 y 36 años.</p>
+        <p><strong>Interpretación:</strong> Las personas involucradas son sobre todo hombres adultos en edad laboral. El predominio masculino coincide con el de los conductores y motociclistas, donde los hombres superan el 89% (tabla resumen). Que sea una hipótesis razonable no significa que los datos la comprueben.</p>
+        <p><strong>Utilidad:</strong> Las campañas de prevención pueden dirigirse al grupo más numeroso: hombres de 20 a 39 años, con mensajes y canales pensados para su edad.</p>
+        <p class="mb-0"><strong>Limitación:</strong> 9.639 personas no tienen sexo registrado y 8.230 no tienen una edad válida. Además, sin saber cuántos hombres y mujeres conducen en Bogotá no puede concluirse que los hombres se accidenten más por ser hombres.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c3">Conocimiento 3: Peatones, ciclistas y motociclistas concentran las muertes</button>
+    </h2>
+    <div id="c3" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿El resultado del siniestro es igual de grave para todas las condiciones o algunas concentran más muertes?</p>
+        <p><strong>Variables:</strong> CONDICION y ESTADO (ileso, herido o muerto), hoja ACTOR_VIAL.</p>
+        <p><strong>Procedimiento:</strong> Se cruzó condición con estado y se calculó el porcentaje de cada estado dentro de cada condición. También se calculó qué parte de las 3.074 personas muertas corresponde a cada condición, y se repitió el cálculo por año.</p>
+        <p><strong>Evidencia:</strong> Gráfica 4 y las columnas «Heridas» y «Muertas» de la tabla resumen.</p>
+        <p><strong>Hallazgo:</strong> Los motociclistas, peatones y ciclistas son el 21,0% de las personas, pero el 88,0% de las muertes (2.704 de 3.074). Los peatones son el 5,6% de las personas y el 46,6% de los muertos (1.433). Muere el 6,1% de los peatones frente al 0,02% de los conductores (62 personas), una proporción unas 300 veces mayor. Entre 2015 y 2020 esas tres condiciones aportan entre 84,7% y 90,3% de las muertes cada año.</p>
+        <p><strong>Interpretación:</strong> Quienes circulan sin la protección de una carrocería (a pie, en bicicleta o en moto) sufren las consecuencias más graves, y esto se repite todos los años. Los conductores, que son la mayoría, casi siempre salen ilesos (97,9%).</p>
+        <p><strong>Utilidad:</strong> Permite priorizar medidas de protección para peatones, ciclistas y motociclistas: cruces peatonales seguros, ciclorrutas, control de velocidad y campañas sobre el uso del casco.</p>
+        <p class="mb-0"><strong>Limitación:</strong> Casi no hay peatones ni pasajeros ilesos registrados (2 en cada grupo), así que sus porcentajes de heridos no son comparables con los de otras condiciones. Los datos tampoco indican la causa de la gravedad (velocidad, tipo de vía, uso del casco).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. Limitación y decisión -->
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="alert alert-warning">
+      <strong>Limitación del análisis:</strong>
+      los datos cuentan personas registradas en siniestros, no la población de Bogotá, así que no permiten decir qué grupo tiene más riesgo. Casi no se registran peatones ni pasajeros ilesos, por lo que el 23,1% de personas heridas o muertas probablemente esté sobreestimado. Además, 148 siniestros no tienen personas registradas, 9.639 personas no tienen sexo, 8.230 no tienen una edad válida y 2020 es un año atípico (48.338 personas frente a entre 67.899 y 79.861 en los años anteriores).
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="alert alert-success">
+      <strong>Posible decisión sustentada en los datos:</strong>
+      priorizar medidas de protección para peatones, ciclistas y motociclistas, que son el 21,0% de las personas involucradas pero el 88,0% de las muertes, y complementar con campañas de prevención dirigidas a hombres de 20 a 39 años, el grupo más numeroso de la población.
+    </div>
+  </div>
+</div>
 {% endblock %}
