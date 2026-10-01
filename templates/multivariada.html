@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block titulo %}Dimensión relacional y multivariada{% endblock %}
+
+{% block contenido %}
+{# Plotly debe cargarse ANTES de las gráficas. Si lo mueven a base.html (<head>), borren esta línea. #}
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+<!-- 1. Título y pregunta -->
+<h1>Dimensión relacional y multivariada</h1>
+<div class="alert alert-info">
+  <strong>Pregunta de análisis:</strong>
+  ¿Qué diferencias o relaciones evidentes pueden identificarse al analizar conjuntamente tres o más variables?
+</div>
+<p class="text-muted">
+  En esta dimensión se cruzan al mismo tiempo la <strong>condición de la persona</strong> (conductor, motociclista, pasajero,
+  peatón o ciclista), sus <strong>características</strong> (grupo de edad), el <strong>tipo de siniestro</strong> (choque, atropello,
+  volcamiento…), la <strong>franja horaria</strong> y la <strong>localidad</strong>, para ver qué combinaciones concentran
+  las muertes y qué relaciones aparecen al mirar varias variables juntas.
+</p>
+
+<!-- 2. Variables utilizadas -->
+<div class="card mb-4">
+  <div class="card-header">Variables utilizadas</div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>CONDICION</strong> (hoja ACTOR_VIAL): papel de la persona en el siniestro. Categórica.</li>
+    <li class="list-group-item"><strong>GRUPO_EDAD</strong> (de EDAD, hoja ACTOR_VIAL): rangos 0-11, 12-17, 18-28, 29-59 y 60+. Categórica.</li>
+    <li class="list-group-item"><strong>ESTADO</strong> (hoja ACTOR_VIAL): ileso, herido o muerto. Categórica. Es la variable que se explica.</li>
+    <li class="list-group-item"><strong>CLASE_TXT</strong> (hoja SINIESTROS): tipo de siniestro (choque, atropello, volcamiento, caída de ocupante, otro). Categórica.</li>
+    <li class="list-group-item"><strong>GRAVEDAD</strong> (hoja SINIESTROS): con muertos, con heridos o solo daños. Categórica.</li>
+    <li class="list-group-item"><strong>HORA_NUM</strong> (de HORA, hoja SINIESTROS): hora entera agrupada en cuatro franjas. Temporal.</li>
+    <li class="list-group-item"><strong>LOCALIDAD</strong> (de CODIGO_LOCALIDAD, hoja SINIESTROS): localidad del hecho. Categórica, territorial; se usa como filtro.</li>
+    <li class="list-group-item"><strong>ANIO</strong> (de FECHA, hoja SINIESTROS): año del hecho; se usa como filtro. Temporal.</li>
+    <li class="list-group-item"><strong>CODIGO_ACCIDENTE</strong>: llave que une la persona (ACTOR_VIAL) con el siniestro (SINIESTROS) para cruzar condición, tipo y territorio.</li>
+  </ul>
+</div>
+
+<!-- 3. Filtros interactivos (2) -->
+<form method="get" class="row g-3 mb-2 p-3 bg-light rounded">
+  <div class="col-md-5">
+    <label class="form-label">Año</label>
+    <select name="anio" class="form-select">
+      <option value="Todos">Todos</option>
+      {% for a in anios %}
+        <option value="{{ a }}" {% if a|string == sel_anio %}selected{% endif %}>{{ a }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-5">
+    <label class="form-label">Localidad</label>
+    <select name="localidad" class="form-select">
+      <option value="Todas">Todas</option>
+      {% for l in localidades %}
+        <option value="{{ l }}" {% if l == sel_loc %}selected{% endif %}>{{ l }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-primary w-100">Aplicar</button>
+  </div>
+</form>
+<p class="text-muted mb-4">
+  El filtro de localidad no se aplica a la gráfica 3, porque esa gráfica compara justamente las localidades entre sí.
+  Los demás cruces sí responden a los dos filtros.
+</p>
+
+<!-- 4. Indicadores -->
+<div class="row text-center g-3 mb-4">
+  <div class="col-md-6 col-lg-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_personas }}</h2><p class="mb-0">Personas involucradas ({{ ind_muertes }} muertes)</p>
+    </div></div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_tasa }}%</h2><p class="mb-0">Tasa de mortalidad de las personas</p>
+    </div></div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_peaton60 }}%</h2><p class="mb-0">De las muertes con edad son peatones de 60+</p>
+    </div></div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card"><div class="card-body">
+      <h2>{{ ind_ratio }}×</h2><p class="mb-0">Más letal el volcamiento ({{ ind_let_volc }}%) que el choque ({{ ind_let_choque }}%)</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- 5. Visualizaciones con interpretación -->
+<p class="text-muted">Las interpretaciones describen la vista completa: Año = Todos y Localidad = Todas. Al aplicar filtros, las cifras de las gráficas cambian.</p>
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <h4>% de personas muertas por condición y grupo de edad</h4>
+    {{ grafica1|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Ninguna variable explica sola el resultado: hace falta cruzar el rol con la edad. El peatón de 60 años o más es la combinación más letal con diferencia: muere el 11,26% de ellos (562 de 4.991). Le siguen el ciclista de 60+ (7,68%), el peatón de 29 a 59 (4,99%) y el peatón de 18 a 28 (4,01%). En el extremo opuesto, el conductor muere en 0,02%–0,03% en todas las edades. La misma edad de 60+ cambia por completo según el rol: 11,26% en peatones frente a 2,05% en motociclistas y 0,03% en conductores.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>% de siniestros con muertos por tipo de siniestro y franja horaria</h4>
+    {{ grafica2|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> El tipo de siniestro pesa más que la hora. El volcamiento es grave a toda hora (entre 8,91% y 10,40%) y el atropello también es alto (5,29%–12,28%), mientras el choque se mantiene bajo (0,54%–2,24%) en todas las franjas. La madrugada amplifica el riesgo en todos los tipos: el atropello pasa de 5,29% en la tarde a 12,28% en la madrugada (más del doble) y el choque de 0,54% a 2,24%. La combinación más peligrosa es, entonces, volcamiento o atropello ocurrido en la madrugada.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>Relación entre tipo de siniestro y gravedad por localidad</h4>
+    {{ grafica3|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Existe una relación positiva clara entre la composición del siniestro y su gravedad: las localidades con mayor proporción de atropellos son también las que tienen mayor porcentaje de siniestros con muertos (correlación de 0,86 entre las dos variables, sin Sumapaz). Usme (21,3% de atropellos y 3,15% con muertos), Ciudad Bolívar (19,0% y 2,88%) y San Cristóbal (20,1% y 2,22%) están en el extremo alto, mientras Chapinero (7,1% y 0,75%), Usaquén (5,6% y 0,81%) y Barrios Unidos (5,6% y 0,99%) están en el bajo. Sumapaz queda fuera por tener solo 7 siniestros, aunque allí 3 dejaron muertos: es un caso inusual pero poco representativo.</p>
+  </div>
+  <div class="col-lg-6">
+    <h4>¿Quién muere según el tipo de siniestro?</h4>
+    {{ grafica4|safe }}
+    <p class="text-muted"><strong>Interpretación:</strong> Al cruzar tipo de siniestro con la condición de la víctima, el patrón es muy nítido: el tipo de hecho determina quién muere. En los atropellos el 97,7% de los fallecidos son peatones (1.366); en los choques el 51,6% son motociclistas (707) y el 24,9% ciclistas (341); en los volcamientos el 58,2% son motociclistas (149); y en las caídas de ocupante el 92,5% son pasajeros (37). Es decir, el mismo desenlace (morir) llega por vías totalmente distintas según el tipo de siniestro.</p>
+  </div>
+</div>
+
+<!-- 6. Tabla resumen (evidencia) -->
+<h3>Resumen por tipo de siniestro</h3>
+<div class="table-responsive mb-4">
+  <table class="table table-striped mb-0">
+    <thead>
+      <tr><th>Tipo</th><th>Siniestros</th><th>Siniestros con muertos</th><th>% con muertos</th><th>Condición más frecuente entre los fallecidos</th><th>Fallecidos</th></tr>
+    </thead>
+    <tbody>
+      {% for f in tabla %}
+      <tr><td>{{ f.clase }}</td><td>{{ f.siniestros }}</td><td>{{ f.con_muertos }}</td><td>{{ f.pct }}</td><td>{{ f.victima }}</td><td>{{ f.victima_n }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="text-muted mb-4">«Siniestros con muertos» cuenta siniestros (pueden tener varias víctimas); «Fallecidos» cuenta personas. La tabla respeta los dos filtros.</p>
+
+<!-- 7. Conocimientos evidentes (3) -->
+<h3>Conocimientos evidentes</h3>
+<div class="accordion mb-4" id="conocimientos">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#c1">Conocimiento 1: El rol y la edad por separado no bastan; juntos identifican al peatón mayor como el más vulnerable</button>
+    </h2>
+    <div id="c1" class="accordion-collapse collapse show" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿La probabilidad de morir depende solo del rol o de la edad, o solo se entiende al cruzar las dos variables?</p>
+        <p><strong>Variables:</strong> CONDICION, GRUPO_EDAD y ESTADO (hoja ACTOR_VIAL).</p>
+        <p><strong>Procedimiento:</strong> Se cruzaron las cinco condiciones con los cinco grupos de edad y, en cada celda, se calculó el porcentaje de personas muertas sobre las personas de esa combinación. Se excluyeron las personas sin edad válida.</p>
+        <p><strong>Evidencia:</strong> Gráfica 1 (mapa de calor) e indicador «De las muertes con edad son peatones de 60+».</p>
+        <p><strong>Hallazgo:</strong> El peatón de 60+ tiene la mayor mortalidad (11,26%; 562 de 4.991), seguido del ciclista de 60+ (7,68%) y el peatón de 29 a 59 (4,99%). El conductor no supera el 0,03% en ninguna edad. Las 562 muertes de peatones de 60+ son el 19,6% de todas las muertes con edad registrada (562 de 2.866).</p>
+        <p><strong>Interpretación:</strong> El riesgo no está en una sola variable. La edad avanzada es más letal cuando se va a pie, menos cuando se va en moto y casi nula al frente de un vehículo cubierto. El resultado aparece en la intersección de rol y edad, no en cada variable por aparte.</p>
+        <p><strong>Utilidad:</strong> Permite focalizar medidas de protección (cruces seguros, tiempos de semáforo más largos, reductores de velocidad) en peatones mayores, que son un grupo pequeño de la población registrada pero concentran una de cada cinco muertes.</p>
+        <p class="mb-0"><strong>Limitación:</strong> 208 fallecidos no tienen edad válida y quedan fuera del cruce. Además, sin saber cuántos peatones mayores circulan no puede afirmarse que su riesgo relativo sea mayor, solo que entre las personas registradas mueren más.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c2">Conocimiento 2: El tipo de siniestro decide quién muere</button>
+    </h2>
+    <div id="c2" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿El tipo de siniestro y la condición de la persona se relacionan al momento de morir?</p>
+        <p><strong>Variables:</strong> CLASE_TXT (hoja SINIESTROS), CONDICION y ESTADO (hoja ACTOR_VIAL), unidas por CODIGO_ACCIDENTE.</p>
+        <p><strong>Procedimiento:</strong> Se unió cada persona fallecida con el tipo de siniestro de su accidente y se calculó qué porcentaje de las muertes de cada tipo corresponde a cada condición.</p>
+        <p><strong>Evidencia:</strong> Gráfica 4 y tabla «Resumen por tipo de siniestro» (columna «Condición más frecuente entre los fallecidos»).</p>
+        <p><strong>Hallazgo:</strong> El 97,7% de las muertes en atropellos son peatones (1.366 de 1.398); en choques el 51,6% son motociclistas (707) y el 24,9% ciclistas (341); en volcamientos el 58,2% son motociclistas (149); y en caídas de ocupante el 92,5% son pasajeros (37).</p>
+        <p><strong>Interpretación:</strong> Morir no es un resultado único: el tipo de siniestro define el perfil de la víctima. Atropellar mata a quien va a pie; chocar o volcar mata sobre todo a quien va en dos ruedas sin carrocería; una caída de ocupante mata a los pasajeros. La combinación tipo + condición explica mejor las muertes que cualquiera de las dos por separado.</p>
+        <p><strong>Utilidad:</strong> Permite orientar medidas específicas: separación física y cruces seguros para atropellos, y control de velocidad, uso de casco y protección para motociclistas y ciclistas frente a choques y volcamientos.</p>
+        <p class="mb-0"><strong>Limitación:</strong> La hoja de hipótesis (causas) no se cruzó en esta gráfica, así que no puede decirse por qué ocurrió cada tipo; y como en un choque puede haber varias víctimas, los porcentajes describen muertes, no siniestros.</p>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c3">Conocimiento 3: Más atropellos en el territorio, más siniestros con muertos</button>
+    </h2>
+    <div id="c3" class="accordion-collapse collapse" data-bs-parent="#conocimientos">
+      <div class="accordion-body">
+        <p><strong>Pregunta:</strong> ¿Por qué unas localidades tienen una proporción de siniestros con muertos más alta que otras?</p>
+        <p><strong>Variables:</strong> LOCALIDAD y CLASE_TXT (hoja SINIESTROS), con GRAVEDAD como variable explicada.</p>
+        <p><strong>Procedimiento:</strong> Por cada localidad se calculó el porcentaje de siniestros que son atropellos y el porcentaje de siniestros con muertos; luego se midió la correlación entre las dos variables. Se excluyó Sumapaz por tener solo 7 siniestros.</p>
+        <p><strong>Evidencia:</strong> Gráfica 3 (puntos por localidad, con las líneas de promedio).</p>
+        <p><strong>Hallazgo:</strong> La relación es positiva y fuerte (correlación de 0,86). Usme (21,3% de atropellos y 3,15% con muertos), San Cristóbal (20,1% y 2,22%) y Ciudad Bolívar (19,0% y 2,88%) están en el extremo alto; Chapinero (7,1% y 0,75%), Usaquén (5,6% y 0,81%) y Barrios Unidos (5,6% y 0,99%) en el bajo. Sumapaz, con 7 siniestros y 3 muertes, es un caso inusual pero poco representativo.</p>
+        <p><strong>Interpretación:</strong> Parte de las diferencias de gravedad entre localidades no se debe a que ocurran más choques, sino a que ocurren más atropellos. El territorio actúa a través de la composición del siniestro: donde el peatón está más expuesto, mueren más personas.</p>
+        <p><strong>Utilidad:</strong> Sugiere intervenir el espacio público (cruces, orejas, iluminación, control de velocidad) en las localidades del sur con más atropellos, en lugar de tratar el problema solo como un asunto de volumen de tráfico.</p>
+        <p class="mb-0"><strong>Limitación:</strong> Es una asociación ecológica: describe localidades, no personas, y no prueba causalidad. No se controló por tráfico, población ni velocidad, así que la relación observada puede deberse en parte a otros factores.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. Limitación y decisión -->
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="alert alert-warning">
+      <strong>Limitación del análisis:</strong>
+      los cruces usan datos administrativos de personas registradas en siniestros, no de toda la población ni de cuántos circulan, por lo que describen quién muere registrado, no el riesgo real. Hay 208 fallecidos sin edad válida que quedan fuera de los cruces por edad, y 148 siniestros sin personas registradas. Las comparaciones entre localidades son ecológicas y no prueban causalidad, y la relación se apoya en un solo indicador (proporción de atropellos) sin controlar por tráfico, velocidad ni población.
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="alert alert-success">
+      <strong>Posible decisión sustentada en los datos:</strong>
+      combinar tres criterios al priorizar seguridad vial: (1) proteger al peatón mayor de 60 años, que tiene la mayor mortalidad (11,26%) y concentra el 19,6% de las muertes con edad; (2) atacar el tipo de siniestro más letal según la víctima — cruces seguros contra atropellos y control de velocidad y casco contra choques y volcamientos de motociclistas —; y (3) intervenir el espacio público en las localidades del sur con más atropellos (Usme, San Cristóbal, Ciudad Bolívar), donde la proporción de siniestros con muertos supera el promedio de Bogotá.
+    </div>
+  </div>
+</div>
+{% endblock %}
